@@ -27666,7 +27666,7 @@ if (gameName == 'Bloodlines') then (function()
 							ToastNotif.new({
 								text = string.format('%s has chakra sense', obj.Name)
 							})
-							local s = Instance("Sound",workspace)
+							local s = Instance.new("Sound",workspace)
 							s.SoundId = "rbxassetid://17208361335"
 							s.Volume = 2
 							s.TimePosition = 0

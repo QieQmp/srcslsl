@@ -27672,7 +27672,7 @@ if (gameName == 'Bloodlines') then (function()
 							s.TimePosition = 0
 							s:Play()
 
-							sound.Ended:Connect(function()
+							s.Ended:Connect(function()
 								s:Remove()
 							end)
 						end;

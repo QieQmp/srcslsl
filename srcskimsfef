@@ -98,7 +98,6 @@ findFirstChild = game.FindFirstChild
 local sharedRequires = {};
 
 
-
 setStatus('All done', true);
 sharedRequires['Signal'] = (function()
 
@@ -5575,7 +5574,7 @@ sharedRequires['AudioPlayer'] = (function()
 end)();
 
 sharedRequires['supportedGamesList'] = (function()
-	return [[{"88070565":"Bloxburg","111958650":"Arsenal","113491250":"Phantom Forces","170247232":"Parkour","212154879":"Sword Burst 2","245662005":"Jailbreak","254394801":"KAT","299659045":"Phantom Forces","301252049":"RoBeats","358276974":"Apocalypse Rising 2","380704901":"Ro Ghoul","383310974":"Adopt Me","648454481":"Grand Piece Online","807930589":"Wild West","913400159":"Ace Of Spadez","1087859240":"Rogue Lineage","1168263273":"Bad Business","1180269832":"Arcane Odyssey","1359573625":"DeepWoken","1390601379":"Combat Warriors","1625049715":"AdventureTales","1643537246":"RoBeats CS","1663370770":"Mighty Omega","1946714362":"Bloodlines","2142948266":"Shitty Slayer","3291589472":"Voxl Blade","3525075510":"Project Mugetsu","5019154432":"Balthazar"}]]
+	return [[{"88070565":"Bloxburg","111958650":"Arsenal","113491250":"Phantom Forces","170247232":"Parkour","212154879":"Sword Burst 2","245662005":"Jailbreak","254394801":"KAT","299659045":"Phantom Forces","301252049":"RoBeats","358276974":"Apocalypse Rising 2","380704901":"Ro Ghoul","383310974":"Adopt Me","648454481":"Grand Piece Online","807930589":"Wild West","913400159":"Ace Of Spadez","1087859240":"Rogue Lineage","1168263273":"Bad Business","1180269832":"Arcane Odyssey","1359573625":"DeepWoken","1390601379":"Combat Warriors","1625049715":"AdventureTales","1643537246":"RoBeats CS","1663370770":"Mighty Omega","1946714362":"Bloodlines","2142948266":"Shitty Slayer","3291589472":"Voxl Blade","3525075510":"Project Mugetsu","5019154432":"Balthazar", "6584231105":"Developer Donations"}]]
 end)();
 
 sharedRequires['055b759436afbb00dff7f3d6892eda9b8ef9b685f5abb07e1ecf6fca60f206b9'] = (function()
@@ -8469,13 +8468,6 @@ end);
 
 local supportedGamesList = HttpService:JSONDecode(sharedRequires['supportedGamesList']);
 local gameName = supportedGamesList[tostring(game.GameId)];
-
---//Base library
-
-for _, v in next, getconnections(LocalPlayer.Idled) do
-	if (v.Function) then continue end;
-	v:Disable();
-end;
 
 --//Load special game Hub
 
@@ -13910,17 +13902,6 @@ if (gameName == 'Rogue Lineage') then (function()
 			local assetsList = {'IllusionistJoin.mp3', 'IllusionistLeft.mp3', 'IllusionistSpectateEnd.mp3', 'IllusionistSpectateStart.mp3', 'ModeratorJoin.mp3', 'ModeratorLeft.mp3'};
 			local assets = {};
 		
-			local apiEndpoint = USE_INSECURE_ENDPOINT and 'http://test.aztupscripts.xyz' or 'https://aztupscripts.xyz';
-		
-			for i, v in next, assetsList do
-				if(not isfile(string.format('Aztup Hub V3/%s', v))) then
-					print('Downloading', v, '...');
-					writefile(string.format('Aztup Hub V3/%s', v), game:HttpGet(string.format('%s/%s', apiEndpoint, v)));
-				end;
-		
-				assets[v] = getcustomasset(string.format('Aztup Hub V3/%s', v));
-			end;
-		
 			function loadSound(soundName)
 				local sound = Instance.new('Sound');
 				sound.SoundId = assets[soundName];
@@ -19062,7 +19043,6 @@ if (gameName == 'Rogue Lineage') then (function()
 						if(illusionists[player]) then return end;
 						illusionists[player] = true;
 		
-						loadSound('IllusionistJoin.mp3');
 						makeNotification('Illusionist Alert', string.format('[%s] Has joined your game', player.Name), true);
 					end;
 		
@@ -19093,7 +19073,6 @@ if (gameName == 'Rogue Lineage') then (function()
 		
 								if(obj.Parent ~= backpack and not spectating) then
 									spectating = true;
-									loadSound('IllusionistSpectateStart.mp3');
 									makeNotification('Spectate Alert', string.format('[%s] Started spectating', player.Name), true);
 		
 									if(library.flags.autoPanic and library.flags.autoPanicValues['Spectate']) then
@@ -19106,7 +19085,6 @@ if (gameName == 'Rogue Lineage') then (function()
 								if(obj.Name ~= 'Observe' or not spectating) then return end;
 		
 								spectating = false;
-								loadSound('IllusionistSpectateEnd.mp3');
 								makeNotification('Spectate Alert', string.format('[%s] Stopped spectating', player.Name), true);
 							end;
 		
@@ -19144,7 +19122,6 @@ if (gameName == 'Rogue Lineage') then (function()
 								task.spawn(panic);
 							end;
 		
-							loadSound('ModeratorJoin.mp3');
 						end;
 		
 						if(table.find(blacklistedHouses, player:GetAttribute('LastName') or 'Unknown')) then
@@ -19161,13 +19138,11 @@ if (gameName == 'Rogue Lineage') then (function()
 						if(allMods[player]) then
 							moderatorInGame = false;
 							allMods[player] = nil;
-							loadSound('ModeratorLeft.mp3');
 							makeNotification('Mod Alert', string.format('%s left the game', tostring(player)), true);
 						end;
 		
 						if(illusionists[player]) then
 							makeNotification('Illusionist', string.format('[%s] Has left your game', player.Name), true);
-							loadSound('IllusionistLeft.mp3');
 							illusionists[player] = nil;
 						end;
 		
@@ -27666,15 +27641,6 @@ if (gameName == 'Bloodlines') then (function()
 							ToastNotif.new({
 								text = string.format('%s has chakra sense', obj.Name)
 							})
-							local s = Instance.new("Sound",workspace)
-							s.SoundId = "rbxassetid://17208361335"
-							s.Volume = 2
-							s.TimePosition = 0
-							s:Play()
-
-							s.Ended:Connect(function()
-								s:Remove()
-							end)
 						end;
 					end;
 
@@ -37681,9 +37647,7 @@ if (gameName == 'KAT') then (function()
 			local oldNamecall;
 
 			oldNamecall = hookmetamethod(game, '__namecall', function(self, ...)
-				--------SX_VM_CNONE();
 				if(checkcaller()) then return oldNamecall(self, ...) end;
-
 				if(getnamecallmethod() == 'FindPartOnRayWithIgnoreList' and library.flags.silentAim) then
 					local caller = getcallingscript();
 					local scriptName = typeof(caller) == 'Instance' and caller.Name;
@@ -37712,6 +37676,118 @@ if (gameName == 'KAT') then (function()
 		local Combat = column1:AddSection('Combat')
 		Combat:AddToggle({text = 'Silent Aim'});
 	end)() 
+end
+
+if (gameName == "Developer Donations") then (function()
+	local library = sharedRequires['Library'];
+		local AudioPlayer = sharedRequires['AudioPlayer'];
+		local makeESP = sharedRequires['makeESP'];
+		local Utility = sharedRequires['Utility'];
+		local Maid = sharedRequires['Maid'];
+		local AnalyticsAPI = sharedRequires['AnalyticsAPI'];
+		local Services = sharedRequires['Services'];
+		local createBaseESP = sharedRequires['createBaseESP'];
+		local EntityESP = sharedRequires['EntityESP'];
+		local ControlModule = sharedRequires['ControlModule'];
+		local ToastNotif = sharedRequires['ToastNotif'];
+		local BlockUtils = sharedRequires['BlockUtils'];
+		local TextLogger = sharedRequires['TextLogger'];
+		local fromHex = sharedRequires['fromHex'];
+		local toCamelCase = sharedRequires['toCamelCase'];
+		local Webhook = sharedRequires['Webhook'];
+		local Signal = sharedRequires['Signal'];
+		
+		local column1 = unpack(library.columns);
+		local maid = Maid.new()
+
+		local ReplicatedStorage, HttpService, RunService, Players, VirtualInputManager, CollectionService, MarketplaceService, Stats, UserInputService = Services:Get('ReplicatedStorage', 'HttpService', 'RunService', 'Players', 'VirtualInputManager', 'CollectionService', 'MarketplaceService', 'Stats', 'UserInputService');
+
+		local function convertPlaceId(id)
+			local apiUrl = string.format("https://apis.roblox.com/universes/v1/places/%d/universe", id)
+			local headers = {
+				["content-type"] = "application/json"
+			}
+			local requestFunction = http_request or request or HttpPost or syn.request
+		
+			local requestOptions = {
+				Url = apiUrl,
+				Method = "GET",
+				Headers = headers
+			}
+		
+			local response = requestFunction(requestOptions)
+		
+			if response and response.StatusCode == 200 then
+				local data = HttpService:JSONDecode(response.Body)
+				print("Universe ID:", data.universeId)
+				return data.universeId -- Return the Universe ID
+			else
+				warn("Failed to get Universe ID:", response and response.StatusMessage or "Unknown error")
+				return nil -- Return nil if the request fails
+			end
+		end
+		
+
+		--// Game stuff
+		local changeText = ReplicatedStorage:WaitForChild("Events"):FindFirstChild("ChangeText")
+		local changeBooth = ReplicatedStorage:WaitForChild("Events"):FindFirstChild("EquipBooth")
+		local displayGame = ReplicatedStorage:WaitForChild("Events"):FindFirstChild("DisplayGame")
+		local changeGoal = ReplicatedStorage:WaitForChild("Events"):WaitForChild("ChangeGoal")
+		local booths = ReplicatedStorage:WaitForChild("Booths")
+		
+		local availablebooths = {}
+
+		for i,v in pairs(booths:GetChildren()) do
+			table.insert(availablebooths, v.Name)
+		end
+
+      local Exploits = column1:AddSection('Exploits')
+
+	  Exploits:AddBox({
+		text = 'Display Game',
+		flag = 'DisplayG',
+		tip = "Put in the PlaceID of the game you want to display.",
+		callback = function(output)
+			local universeId = convertPlaceId(output)
+			if universeId then
+				displayGame:FireServer(universeId) 
+			else
+				warn("Could not retrieve Universe ID. Remote event not fired.")
+			end
+		end
+	})
+
+
+	local text = ""
+	Exploits:AddBox({
+		text = 'Booth Text',
+		flag = 'BoothText',
+		callback = function(output)
+			changeText:FireServer(output)
+		end
+	});
+
+	local goal = ""
+	Exploits:AddBox({
+		text = 'Booth Goal',
+		flag = 'BoothTextT',
+		tip = "You can change it to '-inf' and 'inf' too or any number with a minus.",
+		callback = function(output)
+			changeGoal:FireServer(output)
+		end
+	});
+
+	Exploits:AddList({
+		text = 'Change Booth',
+		flag = 'BoothChange',
+		values =  availablebooths,
+		callback = function(selection)
+			changeBooth:FireServer(selection)
+			print(selection)
+		end
+	});
+
+   end)()
 end
 
 if (gameName == 'Balthazar') then (function()
@@ -38194,23 +38270,23 @@ if (gameName == 'Balthazar') then (function()
 
 		Player:AddDivider('Combat')
 
-		Player:AddToggle({
-			text = 'Fly',
-			callback = functions.fly
-		}):AddSlider({
-			min = 16,
-			max = 200,
-			flag = 'Fly Hack Value'
-		});
+		--Player:AddToggle({
+			--text = 'Fly',
+			--callback = functions.fly
+		--}):AddSlider({
+			--min = 16,
+			--max = 200,
+			--flag = 'Fly Hack Value'
+		--});
 
-		Player:AddToggle({
-			text = 'Speedhack',
-			callback = functions.speedHack
-		}):AddSlider({
-			min = 16,
-			max = 200,
-			flag = 'Speed Hack Value'
-		});
+		--Player:AddToggle({
+			--text = 'Speedhack',
+			--callback = functions.speedHack
+		--}):AddSlider({
+			--min = 16,
+			--max = 200,
+			--flag = 'Speed Hack Value'
+		--});
 
 		Player:AddToggle({
 			text = 'Infinite Jump',
@@ -38248,18 +38324,18 @@ if (gameName == 'Balthazar') then (function()
 			callback = functions.autoload
 		})
 
-		Player:AddToggle({
-			text = "Auto Safe",
-			tip = "Automatically tp's u to a safe place when knocked / low health",
-			callback = functions.autosave
-		})
+		--Player:AddToggle({
+			--text = "Auto Safe",
+			--tip = "Automatically tp's u to a safe place when knocked / low health",
+			--callback = functions.autosave
+		--})
 
 
-		Player:AddButton({
-			text = "Instant Respawn",
-			tip = "Instant respawns you",
-			callback = functions.instarespawn
-		})
+		--Player:AddButton({
+			--text = "Instant Respawn",
+			--tip = "Instant respawns you",
+			--callback = functions.instarespawn
+		--})
 
 		Exploits:AddDivider('Misc')
 
@@ -38300,11 +38376,11 @@ if (gameName == 'Balthazar') then (function()
 			callback = functions.magicgrenade
 		})
 
-		Exploits:AddButton({
-			text = 'Play Sound',
-			tip = 'Plays weird annoying sound (Server Side)',
-			callback = functions.annoyingsound
-		})
+		--Exploits:AddButton({
+			--text = 'Play Sound',
+			--tip = 'Plays weird annoying sound (Server Side)',
+			--callback = functions.annoyingsound
+		--})
 	end)()
 end
 
@@ -39538,26 +39614,38 @@ if (gameName == 'Combat Warriors') then (function()
 
 				local function getMouseHitPositionWrapper(...)
 					if (not debug.info(3, 's'):find('RangedWeaponClient')) then return oldGetMouseHitPosition(...) end;
-
+				
 					if (library.flags.silentAim) then
-						local target = Utility:getClosestCharacter().Character;
-						local tool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildWhichIsA('Tool');
-						local metaData = tool and WeaponMetadata[tool:GetAttribute('ItemId')];
-
-						local rootPart = Utility:getPlayerData().rootPart;
-						local targetHead = target and target:FindFirstChild('Head');
-
-						if (targetHead and tool and rootPart) then
-							local timeToShoot = (rootPart.Position - targetHead.Position).Magnitude / metaData.speed;
-							print(timeToShoot, metaData.gravity.Y);
-							local prediction = metaData.gravity and 0.5 * metaData.gravity.Y  * timeToShoot ^ 2 or 0;
-
-							return targetHead, targetHead.Position - Vector3.new(0, prediction, 0);
-						end;
-					end;
-
-					return oldGetMouseHitPosition(...);
+						local closestCharacter = Utility:getClosestCharacter()
+						local target = closestCharacter and closestCharacter.Character
+						local tool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildWhichIsA('Tool')
+						local metaData = tool and WeaponMetadata[tool:GetAttribute('ItemId')]
+				
+						-- Try to find a valid target
+						if not target then
+							warn("No valid character found in getClosestCharacter() - fallback logic can be added here")
+							-- Here, you could implement a fallback character selection if needed
+							return oldGetMouseHitPosition(...)
+						end
+				
+						-- Find target's Head, with a fallback to HumanoidRootPart if Head is missing
+						local targetHead = target:FindFirstChild('Head') or target:FindFirstChild('HumanoidRootPart')
+						local rootPart = Utility:getPlayerData().rootPart
+				
+						if targetHead and tool and rootPart then
+							local timeToShoot = (rootPart.Position - targetHead.Position).Magnitude / metaData.speed
+							print(timeToShoot, metaData.gravity.Y)
+							local prediction = metaData.gravity and 0.5 * metaData.gravity.Y * timeToShoot ^ 2 or 0
+				
+							return targetHead, targetHead.Position - Vector3.new(0, prediction, 0)
+						else
+							warn("Missing components for silent aim calculation")
+						end
+					end
+				
+					return oldGetMouseHitPosition(...)
 				end
+				
 
 				oldGetMouseHitPosition = hookfunction(RaycastUtilClient.getMouseHitPosition, function(...)
 					return getMouseHitPositionWrapper(...);
